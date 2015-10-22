@@ -6,9 +6,6 @@
 /* Define to 1 to use the syscall interface for clock_gettime */
 #undef HAVE_CLOCK_SYSCALL
 
-/* Define to 1 if you have the <dlfcn.h> header file. */
-#undef HAVE_DLFCN_H
-
 /* Define to 1 if you have the `epoll_ctl' function. */
 #undef HAVE_EPOLL_CTL
 
@@ -92,10 +89,6 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
-#undef LT_OBJDIR
 
 /* Name of package */
 #undef PACKAGE

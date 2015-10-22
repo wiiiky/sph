@@ -1,10 +1,10 @@
-AC_INIT
+AC_INIT(libev, 4.19)
 
 orig_CFLAGS="$CFLAGS"
 
 AC_CONFIG_SRCDIR([ev_epoll.c])
 
-AM_INIT_AUTOMAKE(libev,4.19) dnl also update ev.h!
+AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
@@ -17,8 +17,10 @@ if test -z "$orig_CFLAGS"; then
   fi
 fi
 
-AC_PROG_INSTALL
-AC_PROG_LIBTOOL
+AC_PROG_RANLIB
+
+#AC_PROG_INSTALL
+#AC_PROG_LIBTOOL
 
 m4_include([libev.m4])
 
