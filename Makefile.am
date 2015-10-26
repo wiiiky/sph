@@ -9,13 +9,9 @@ EXTRA_DIST = LICENSE Changes libev.m4 autogen.sh \
 
 man_MANS = ev.3
 
-#include_HEADERS = ev.h ev++.h event.h
+include_HEADERS = ev.h ev++.h event.h libjac.h hook.h mod.h socket.h
 
-#lib_LTLIBRARIES = libev.la
-noinst_LIBRARIES = libev.a
+lib_LTLIBRARIES = libjac.la
 
-libev_a_SOURCES = ev.c event.c
-#libev_a_LDFLAGS = -version-info $(VERSION_INFO)
-
-ev.3: ev.pod
-	pod2man -n LIBEV -r "libev-$(VERSION)" -c "libev - high performance full featured event loop" -s3 <$< >$@
+libjac_la_SOURCES = ev.c event.c socket.c
+libjac_la_LDFLAGS = -version-info $(VERSION_INFO)
