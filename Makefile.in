@@ -96,7 +96,8 @@ am__aclocal_m4_deps = $(top_srcdir)/libev.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) $(include_HEADERS) $(am__DIST_COMMON)
+	$(am__configure_deps) $(libjac_lainclude_HEADERS) \
+	$(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
@@ -131,7 +132,7 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(man3dir)" \
-	"$(DESTDIR)$(includedir)"
+	"$(DESTDIR)$(libjac_laincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libjac_la_LIBADD =
 am_libjac_la_OBJECTS = ev.lo event.lo socket.lo
@@ -187,7 +188,7 @@ am__can_run_installinfo = \
 man3dir = $(mandir)/man3
 NROFF = nroff
 MANS = $(man_MANS)
-HEADERS = $(include_HEADERS)
+HEADERS = $(libjac_lainclude_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) \
 	$(LISP)config.h.in
 # Read a list of newline-separated strings from the standard input,
@@ -353,10 +354,13 @@ EXTRA_DIST = LICENSE Changes libev.m4 autogen.sh \
 	     ev.3 ev.pod Symbols.ev Symbols.event
 
 man_MANS = ev.3
-include_HEADERS = ev.h ev++.h event.h libjac.h hook.h mod.h socket.h
 lib_LTLIBRARIES = libjac.la
 libjac_la_SOURCES = ev.c event.c socket.c
 libjac_la_LDFLAGS = -version-info $(VERSION_INFO)
+libjac_lainclude_HEADERS = \
+	ev.h ev++.h event.h libjac.h hook.h mod.h socket.h
+
+libjac_laincludedir = $(includedir)/libjac
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -531,27 +535,27 @@ uninstall-man3:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^3][0-9a-z]*$$,3,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man3dir)'; $(am__uninstall_files_from_dir)
-install-includeHEADERS: $(include_HEADERS)
+install-libjac_laincludeHEADERS: $(libjac_lainclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
+	@list='$(libjac_lainclude_HEADERS)'; test -n "$(libjac_laincludedir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(includedir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(includedir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(libjac_laincludedir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(libjac_laincludedir)" || exit 1; \
 	fi; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libjac_laincludedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libjac_laincludedir)" || exit $$?; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-libjac_laincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
+	@list='$(libjac_lainclude_HEADERS)'; test -n "$(libjac_laincludedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(includedir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(libjac_laincludedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -779,7 +783,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(MANS) $(HEADERS) config.h
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(libjac_laincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -836,7 +840,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS install-man
+install-data-am: install-libjac_laincludeHEADERS install-man
 
 install-dvi: install-dvi-am
 
@@ -884,8 +888,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-man
+uninstall-am: uninstall-libLTLIBRARIES \
+	uninstall-libjac_laincludeHEADERS uninstall-man
 
 uninstall-man: uninstall-man3
 
@@ -900,15 +904,15 @@ uninstall-man: uninstall-man3
 	distdir distuninstallcheck dvi dvi-am html html-am info \
 	info-am install install-am install-data install-data-am \
 	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-includeHEADERS \
-	install-info install-info-am install-libLTLIBRARIES \
+	install-html install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-libjac_laincludeHEADERS \
 	install-man install-man3 install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-man uninstall-man3
+	uninstall-am uninstall-libLTLIBRARIES \
+	uninstall-libjac_laincludeHEADERS uninstall-man uninstall-man3
 
 .PRECIOUS: Makefile
 

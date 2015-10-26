@@ -9,9 +9,11 @@ EXTRA_DIST = LICENSE Changes libev.m4 autogen.sh \
 
 man_MANS = ev.3
 
-include_HEADERS = ev.h ev++.h event.h libjac.h hook.h mod.h socket.h
-
 lib_LTLIBRARIES = libjac.la
 
 libjac_la_SOURCES = ev.c event.c socket.c
 libjac_la_LDFLAGS = -version-info $(VERSION_INFO)
+
+libjac_lainclude_HEADERS = \
+	ev.h ev++.h event.h libjac.h hook.h mod.h socket.h
+libjac_laincludedir = $(includedir)/libjac

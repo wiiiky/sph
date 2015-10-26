@@ -18,7 +18,7 @@
 #ifndef __LIBJAC_SOCKET_H__
 #define __LIBJAC_SOCKET_H__
 
-#include <ev.h>
+#include "ev.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
