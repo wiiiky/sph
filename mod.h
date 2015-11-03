@@ -26,12 +26,14 @@ typedef struct {
     JacHook *hook;
 }JacModule;
 
+typedef JacModule* (*JacModuleInit)();
 
-#define JACQUES_MODULE_NAME __jacques_module__
+
+#define JACQUES_MODULE_NAME __jacques_module_init__
 #define STR(S)  #S
 #define XSTR(S) STR(S)
 #define JACQUES_MODULE_NAME_STRING  XSTR(JACQUES_MODULE_NAME)
-#define JACQUES_MODULE(mod) JacModule* JACQUES_MODULE_NAME=&mod
+#define JACQUES_MODULE_INIT(mod) JacModuleInit JACQUES_MODULE_NAME=mod
 
 
 #endif

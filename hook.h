@@ -22,6 +22,8 @@
 
 #include "socket.h"
 
+typedef void (*JacExitHook)(void);
+
 /*
  * 返回0关闭链接
  */
@@ -36,6 +38,7 @@ typedef int (*JacRecvHook)(Socket *socket, const void *buf, unsigned int len);
 typedef struct {
     JacAcceptHook accept;
     JacRecvHook recv;
+    JacExitHook exit;
 }JacHook;
 
 

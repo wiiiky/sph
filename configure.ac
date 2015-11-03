@@ -1,5 +1,6 @@
 AC_INIT(libjac, 0.01)
 
+
 orig_CFLAGS="$CFLAGS"
 
 AC_CONFIG_SRCDIR([ev_epoll.c])
@@ -10,6 +11,8 @@ AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
+
+AC_PREFIX_DEFAULT(/usr)
 
 dnl Supply default CFLAGS, if not specified
 if test -z "$orig_CFLAGS"; then
