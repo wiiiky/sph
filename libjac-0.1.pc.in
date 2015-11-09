@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+includedir=@includedir@/libjac
+
+Name: libjac
+Description: Jacques的运行库
+Version: @VERSION@
+Requires:
+Libs: -L${libdir} -ljac
+Cflags: -I${includedir}

@@ -27,4 +27,6 @@ AC_PROG_LIBTOOL
 m4_include([libev.m4])
 
 AC_CONFIG_FILES([Makefile])
-AC_OUTPUT
+AC_OUTPUT([
+    libjac-0.1.pc
+])
