@@ -17,8 +17,31 @@
 
 #include "socket.h"
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
+/* 释放套接字所有资源，包括文件描述符和内存 */
+static inline void sph_socket_release(SphSocket *socket){
+    if(socket->onreleased){
+        socket->onreleased(socket);
+    }
+    if(socket->loop){
+        ev_io_stop(socket->loop, (ev_io*)socket);
+    }
+    close(socket->fd);
+    free(socket);
+}
+
+void sph_socket_ref(SphSocket *socket){
+    socket->ref+=1;
+}
+
+void sph_socket_unref(SphSocket *socket){
+    if((--socket->ref)<=0){
+        sph_socket_release(socket);
+    }
+}
 
 
 /* 创建一个套接字 */
@@ -27,7 +50,42 @@ SphSocket *sph_socket_new(void){
     if(sockfd<0){
         return NULL;
     }
+    return sph_socket_new_from_fd(sockfd);
+}
+
+/* 从现有的文件描述符创建一个套接字对象 */
+SphSocket *sph_socket_new_from_fd(int fd){
     SphSocket *socket=(SphSocket*)malloc(sizeof(SphSocket));
-    socket->fd=sockfd;
+    socket->loop=NULL;
+    socket->fd=fd;
+    socket->ref=1;
+    socket->onreleased=NULL;
+    
     return socket;
+}
+
+/* 接收和发送数据的包裹，非阻塞 */
+int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags){
+    return recv(socket->fd, buf, len, flags|MSG_DONTWAIT);
+}
+
+int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags){
+    return send(socket->fd, buf, len, flags|MSG_DONTWAIT);
+}
+
+/* 
+ * 套接字进入事件回调
+ * 在调用此函数之前必须已经给SphSocket设置了loop
+ */
+/* 
+ * 套接字进入事件回调
+ */
+void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
+                      void (*callback)(struct ev_loop*, ev_io *, int)){
+    if(loop==NULL||callback==NULL){
+      return;
+    }
+    socket->loop=loop;
+    ev_io_init((ev_io*)socket, callback, socket->fd, EV_READ|EV_WRITE);
+    ev_io_start(loop, (ev_io*)socket);
 }

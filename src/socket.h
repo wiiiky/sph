@@ -20,14 +20,38 @@
 
 #include <ev.h>
 
+typedef struct _SphSocket SphSocket;
 
-typedef struct {
+
+struct _SphSocket {
     ev_io parent;
+    struct ev_loop *loop;
     int fd;
-}SphSocket;
+    int ref;    /* 引用计数 */
+    
+    void (*onreleased)(SphSocket *self);
+};
+
+#define sph_socket_get_fd(s)    ((s)->fd)
+#define sph_socket_get_evloop(s)    ((s)->loop)
+
+/* 增加和减少引用计数 */
+void sph_socket_ref(SphSocket *socket);
+void sph_socket_unref(SphSocket *socket);
 
 /* 创建一个套接字 */
 SphSocket *sph_socket_new(void);
+SphSocket *sph_socket_new_from_fd(int fd);
+
+/* 接收和发送数据的包裹，非阻塞 */
+int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags);
+int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags);
+
+/* 
+ * 套接字进入事件回调
+ */
+void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
+                      void (*callback)(struct ev_loop*, ev_io *, int));
 
 
 #endif
