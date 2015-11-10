@@ -3,11 +3,12 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 datarootdir=@datarootdir@
 datadir=@datadir@
-includedir=@includedir@/libjac
+includedir=@includedir@/sph
 
-Name: libjac
+Name: sph
 Description: Jacques的运行库
 Version: @VERSION@
 Requires:
-Libs: -L${libdir} -ljac
+Libs: -L${libdir} -lsph
 Cflags: -I${includedir}
+
