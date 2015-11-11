@@ -43,6 +43,16 @@ void sph_socket_unref(SphSocket *socket);
 SphSocket *sph_socket_new(void);
 SphSocket *sph_socket_new_from_fd(int fd);
 
+/*
+ * 绑定地址，可以是IPv6或者IPv4
+ * 成功返回 1，失败返回 0
+ */
+int sph_socket_bind(SphSocket *socket, const char *ip, unsigned short port);
+/* 被动套接字 */
+int sph_socket_listen(SphSocket *socket,int backlog);
+/* reuse地址和端口 */
+int sph_socket_reuse(SphSocket *socket, int addr, int port);
+
 /* 接收和发送数据的包裹，非阻塞 */
 int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags);
 int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags);

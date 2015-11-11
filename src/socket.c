@@ -21,6 +21,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 /* 释放套接字所有资源，包括文件描述符和内存 */
 static inline void sph_socket_release(SphSocket *socket){
@@ -52,6 +54,42 @@ SphSocket *sph_socket_new(void){
         return NULL;
     }
     return sph_socket_new_from_fd(sockfd);
+}
+
+/*
+ * 绑定地址，可以是IPv6或者IPv4
+ * 成功返回 1，失败返回 0
+ */
+int sph_socket_bind(SphSocket *socket, const char *ip, unsigned short port){
+    struct sockaddr_storage addr;
+    socklen_t addrlen;
+    struct sockaddr_in *addr4 = (struct sockaddr_in*)&addr;
+    struct sockaddr_in6 *addr6 = (struct sockaddr_in6*)&addr;
+    
+    if(inet_pton(AF_INET,ip, &addr4->sin_addr.s_addr)){
+        addr4->sin_family=AF_INET;
+        addr4->sin_port=htons(port);
+        addrlen = sizeof(*addr4);
+    }else if(inet_pton(AF_INET6, ip, &addr6->sin6_addr.s6_addr)){
+        addr6->sin6_family=AF_INET6;
+        addr6->sin6_port=htons(port);
+        addrlen=sizeof(*addr6);
+    }else{
+        return 0;
+    }
+    return bind(socket->fd, (struct sockaddr*)&addr, addrlen)==0;
+}
+
+/* 被动套接字 */
+int sph_socket_listen(SphSocket *socket,int backlog){
+    return listen(socket->fd, backlog)==0;
+}
+
+/* reuse地址和端口 */
+int sph_socket_reuse(SphSocket *socket, int addr, int port){
+    int r1=setsockopt(socket->fd, SOL_SOCKET, SO_REUSEPORT, &port, sizeof(port))==0;
+    int r2=setsockopt(socket->fd, SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr))==0;
+    return r1 && r2;
 }
 
 /* 从现有的文件描述符创建一个套接字对象 */
