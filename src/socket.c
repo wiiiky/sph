@@ -16,6 +16,7 @@
  */
 
 #include "socket.h"
+#include "loop.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -82,8 +83,11 @@ int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int fl
  */
 void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
                       void (*callback)(struct ev_loop*, ev_io *, int)){
-    if(loop==NULL||callback==NULL){
+    if(callback==NULL){
       return;
+    }
+    if(loop==NULL){
+        loop=get_default_evloop();
     }
     socket->loop=loop;
     ev_io_init((ev_io*)socket, callback, socket->fd, EV_READ|EV_WRITE);

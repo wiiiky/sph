@@ -49,6 +49,7 @@ int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int fl
 
 /* 
  * 套接字进入事件回调
+ * loop如果为NULL，则使用默认的全局ev_loop
  */
 void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
                       void (*callback)(struct ev_loop*, ev_io *, int));

@@ -3,10 +3,17 @@ AM_CFLAGS = -Wall -Werror
 
 lib_LTLIBRARIES=libsph.la
 
-libsph_la_SOURCES = socket.c
+libsph_la_SOURCES = \
+	socket.c \
+	loop.c \
+	utils.c
+
 libsph_la_LDFLAGS = -lev
 libsph_lainclude_HEADERS = \
-    socket.h
+	sph.h \
+	socket.h \
+	loop.h \
+	utils.c
 
 libsph_laincludedir = $(includedir)/sph
 

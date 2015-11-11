@@ -134,7 +134,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(libsph_laincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsph_la_LIBADD =
-am_libsph_la_OBJECTS = socket.lo
+am_libsph_la_OBJECTS = socket.lo loop.lo utils.lo
 libsph_la_OBJECTS = $(am_libsph_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -325,10 +325,17 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = -Wall -Werror
 lib_LTLIBRARIES = libsph.la
-libsph_la_SOURCES = socket.c
+libsph_la_SOURCES = \
+	socket.c \
+	loop.c \
+	utils.c
+
 libsph_la_LDFLAGS = -lev
 libsph_lainclude_HEADERS = \
-    socket.h
+	sph.h \
+	socket.h \
+	loop.h \
+	utils.c
 
 libsph_laincludedir = $(includedir)/sph
 pkgconfigdir = $(libdir)/pkgconfig
@@ -413,7 +420,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/socket.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
