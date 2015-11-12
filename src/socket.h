@@ -51,7 +51,8 @@ int sph_socket_bind(SphSocket *socket, const char *ip, unsigned short port);
 /* 被动套接字 */
 int sph_socket_listen(SphSocket *socket,int backlog);
 /* reuse地址和端口 */
-int sph_socket_reuse(SphSocket *socket, int addr, int port);
+int sph_socket_reuse_addr(SphSocket *socket, int addr);
+int sph_socket_reuse_port(SphSocket *socket, int port);
 
 /* 接收和发送数据的包裹，非阻塞 */
 int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags);
@@ -63,6 +64,8 @@ int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int fl
  */
 void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
                       void (*callback)(struct ev_loop*, ev_io *, int));
+/* 结束监听套接字事件 */
+void sph_socket_stop(SphSocket *socket);
 
 
 #endif

@@ -25,4 +25,8 @@
 struct ev_loop *get_default_evloop(void);
 
 
+/* 启动主循环 */
+void run_evloop(void);
+
+
 #endif

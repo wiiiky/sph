@@ -30,3 +30,8 @@ struct ev_loop *get_default_evloop(void){
     }
     return default_loop;
 }
+
+/* 启动主循环 */
+void run_evloop(void){
+    ev_run(get_default_evloop(), 0);
+}

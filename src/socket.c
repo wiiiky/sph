@@ -17,6 +17,7 @@
 
 #include "socket.h"
 #include "loop.h"
+#include "utils.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -86,10 +87,20 @@ int sph_socket_listen(SphSocket *socket,int backlog){
 }
 
 /* reuse地址和端口 */
-int sph_socket_reuse(SphSocket *socket, int addr, int port){
-    int r1=setsockopt(socket->fd, SOL_SOCKET, SO_REUSEPORT, &port, sizeof(port))==0;
-    int r2=setsockopt(socket->fd, SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr))==0;
-    return r1 && r2;
+int sph_socket_reuse_addr(SphSocket *socket, int addr){
+#if defined(SO_REUSEADDR)
+    return setsockopt(socket->fd, SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr))==0;
+#else
+    return 0;
+#endif
+}
+
+int sph_socket_reuse_port(SphSocket *socket, int port){
+#if defined(SO_REUSEPORT)
+    return setsockopt(socket->fd, SOL_SOCKET, SO_REUSEPORT, &port, sizeof(port))==0;
+#else
+    return 0;
+#endif
 }
 
 /* 从现有的文件描述符创建一个套接字对象 */
@@ -121,8 +132,8 @@ int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int fl
  */
 void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
                       void (*callback)(struct ev_loop*, ev_io *, int)){
-    if(callback==NULL){
-      return;
+    if(UNLIKELY(callback==NULL)){
+        return;
     }
     if(loop==NULL){
         loop=get_default_evloop();
@@ -130,4 +141,12 @@ void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
     socket->loop=loop;
     ev_io_init((ev_io*)socket, callback, socket->fd, EV_READ|EV_WRITE);
     ev_io_start(loop, (ev_io*)socket);
+}
+
+/* 结束监听套接字事件 */
+void sph_socket_stop(SphSocket *socket){
+    if(UNLIKELY(socket->loop==NULL)){
+        return;
+    }
+    ev_io_stop(socket->loop, (ev_io*)socket);
 }
