@@ -14,28 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
+#ifndef __SPH_JACQUES_H__
+#define __SPH_JACQUES_H__
 
 
-#include "loop.h"
-#include "utils.h"
-#include <stdlib.h>
+#include "socket.h"
 
+typedef struct{
+    SphSocket parent;
+}JacServer;
 
-struct ev_loop *default_loop=NULL;
+#define jac_server_get_socket(server)   ((SphSocket*)server)
 
-/* 返回全局的ev_loop对象 */
-struct ev_loop *get_default_evloop(void){
-    if(UNLIKELY(default_loop==NULL)){
-        default_loop = ev_default_loop(0);
-    }
-    return default_loop;
-}
-
-/* 启动主循环 */
-void run_evloop(void){
-    ev_run(get_default_evloop(), 0);
-}
-
-void stop_evloop(void){
-    ev_break(get_default_evloop(), EVBREAK_ALL);
-}
+#endif

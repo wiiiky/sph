@@ -19,5 +19,5 @@ AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT([
     src/Makefile
-    src/sph-0.1.pc
+    src/sph.pc
 ])

@@ -9,6 +9,6 @@ Name: sph
 Description: Jacques的运行库
 Version: @VERSION@
 Requires:
-Libs: -L${libdir} -lsph
+Libs: -L${libdir} -lsph -lev
 Cflags: -I${includedir}
 

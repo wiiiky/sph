@@ -28,8 +28,8 @@ struct _SphSocket {
     struct ev_loop *loop;
     int fd;
     int ref;    /* 引用计数 */
-    
-    void (*onreleased)(SphSocket *self);
+
+    void (*onreleased)(void *self);
 };
 
 #define sph_socket_get_fd(s)    ((s)->fd)
@@ -42,6 +42,9 @@ void sph_socket_unref(SphSocket *socket);
 /* 创建一个套接字 */
 SphSocket *sph_socket_new(void);
 SphSocket *sph_socket_new_from_fd(int fd);
+
+void sph_socket_init(SphSocket *socket, void (*onreleased)(void *self));
+void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void *self));
 
 /*
  * 绑定地址，可以是IPv6或者IPv4
@@ -58,7 +61,10 @@ int sph_socket_reuse_port(SphSocket *socket, int port);
 int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags);
 int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags);
 
-/* 
+/* accepts a connection and returns the file descriptor */
+int sph_socket_accept(SphSocket *socket);
+
+/*
  * 套接字进入事件回调
  * loop如果为NULL，则使用默认的全局ev_loop
  */

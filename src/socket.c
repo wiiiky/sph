@@ -50,11 +50,35 @@ void sph_socket_unref(SphSocket *socket){
 
 /* 创建一个套接字 */
 SphSocket *sph_socket_new(void){
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockfd<0){
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if(fd<0){
         return NULL;
     }
-    return sph_socket_new_from_fd(sockfd);
+    return sph_socket_new_from_fd(fd);
+}
+
+
+/* 从现有的文件描述符创建一个套接字对象 */
+SphSocket *sph_socket_new_from_fd(int fd){
+    SphSocket *socket=(SphSocket*)malloc(sizeof(SphSocket));
+    sph_socket_init_from_fd(socket, fd, NULL);
+
+    return socket;
+}
+
+void sph_socket_init(SphSocket *s,void (*onreleased)(void *self)){
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if(fd<0){
+        return;
+    }
+    sph_socket_init_from_fd(s, fd, onreleased);
+}
+
+void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void *self)){
+    socket->loop=NULL;
+    socket->fd=fd;
+    socket->ref=1;
+    socket->onreleased=onreleased;
 }
 
 /*
@@ -66,7 +90,7 @@ int sph_socket_bind(SphSocket *socket, const char *ip, unsigned short port){
     socklen_t addrlen;
     struct sockaddr_in *addr4 = (struct sockaddr_in*)&addr;
     struct sockaddr_in6 *addr6 = (struct sockaddr_in6*)&addr;
-    
+
     if(inet_pton(AF_INET,ip, &addr4->sin_addr.s_addr)){
         addr4->sin_family=AF_INET;
         addr4->sin_port=htons(port);
@@ -103,16 +127,6 @@ int sph_socket_reuse_port(SphSocket *socket, int port){
 #endif
 }
 
-/* 从现有的文件描述符创建一个套接字对象 */
-SphSocket *sph_socket_new_from_fd(int fd){
-    SphSocket *socket=(SphSocket*)malloc(sizeof(SphSocket));
-    socket->loop=NULL;
-    socket->fd=fd;
-    socket->ref=1;
-    socket->onreleased=NULL;
-    
-    return socket;
-}
 
 /* 接收和发送数据的包裹，非阻塞 */
 int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags){
@@ -123,11 +137,16 @@ int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int fl
     return send(socket->fd, buf, len, flags|MSG_DONTWAIT);
 }
 
-/* 
+/* accepts a connection and returns the file descriptor */
+int sph_socket_accept(SphSocket *socket){
+    return accept(socket->fd, NULL, NULL);
+}
+
+/*
  * 套接字进入事件回调
  * 在调用此函数之前必须已经给SphSocket设置了loop
  */
-/* 
+/*
  * 套接字进入事件回调
  */
 void sph_socket_start(SphSocket *socket, struct ev_loop *loop,

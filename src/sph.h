@@ -17,7 +17,10 @@
 #ifndef __SPH_H__
 #define __SPH_H__
 
+#include "utils.h"
 #include "socket.h"
+#include "loop.h"
+#include "jacques.h"
 
 
 #endif

@@ -13,12 +13,13 @@ libsph_lainclude_HEADERS = \
 	sph.h \
 	socket.h \
 	loop.h \
-	utils.c
+	utils.h \
+    jacques.h
 
 libsph_laincludedir = $(includedir)/sph
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = sph-0.1.pc
+pkgconfig_DATA = sph.pc
 
 clean-local:
 	-astyle --style=google -n *.c *.h
