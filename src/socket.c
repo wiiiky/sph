@@ -130,11 +130,11 @@ int sph_socket_reuse_port(SphSocket *socket, int port){
 
 /* 接收和发送数据的包裹，非阻塞 */
 int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags){
-    return recv(socket->fd, buf, len, flags|MSG_DONTWAIT);
+    return recv(socket->fd, buf, len, flags);
 }
 
 int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags){
-    return send(socket->fd, buf, len, flags|MSG_DONTWAIT);
+    return send(socket->fd, buf, len, flags);
 }
 
 /* accepts a connection and returns the file descriptor */

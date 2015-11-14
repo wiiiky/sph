@@ -24,6 +24,12 @@ typedef struct{
     SphSocket parent;
 }JacServer;
 
-#define jac_server_get_socket(server)   ((SphSocket*)server)
+#define jac_server_socket(server)   ((SphSocket*)server)
+
+typedef struct {
+    SphSocket parent;
+}JacClient;
+
+#define jac_client_socket(client)   ((SphSocket*)client)
 
 #endif
