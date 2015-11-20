@@ -168,4 +168,5 @@ void sph_socket_stop(SphSocket *socket){
         return;
     }
     ev_io_stop(socket->loop, (ev_io*)socket);
+    socket->loop = NULL;
 }
