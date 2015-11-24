@@ -26,32 +26,32 @@
 #include <arpa/inet.h>
 
 /* 释放套接字所有资源，包括文件描述符和内存 */
-static inline void sph_socket_release(SphSocket *socket){
-    if(socket->onreleased){
+static inline void sph_socket_release(SphSocket *socket) {
+    if(socket->onreleased) {
         socket->onreleased(socket);
     }
-    if(socket->loop){
+    if(socket->loop) {
         ev_io_stop(socket->loop, (ev_io*)socket);
     }
     close(socket->fd);
     free(socket);
 }
 
-void sph_socket_ref(SphSocket *socket){
+void sph_socket_ref(SphSocket *socket) {
     socket->ref+=1;
 }
 
-void sph_socket_unref(SphSocket *socket){
-    if((--socket->ref)<=0){
+void sph_socket_unref(SphSocket *socket) {
+    if((--socket->ref)<=0) {
         sph_socket_release(socket);
     }
 }
 
 
 /* 创建一个套接字 */
-SphSocket *sph_socket_new(void){
+SphSocket *sph_socket_new(void) {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
-    if(fd<0){
+    if(fd<0) {
         return NULL;
     }
     return sph_socket_new_from_fd(fd);
@@ -59,22 +59,22 @@ SphSocket *sph_socket_new(void){
 
 
 /* 从现有的文件描述符创建一个套接字对象 */
-SphSocket *sph_socket_new_from_fd(int fd){
+SphSocket *sph_socket_new_from_fd(int fd) {
     SphSocket *socket=(SphSocket*)malloc(sizeof(SphSocket));
     sph_socket_init_from_fd(socket, fd, NULL);
 
     return socket;
 }
 
-void sph_socket_init(SphSocket *s,void (*onreleased)(void *self)){
+void sph_socket_init(SphSocket *s,void (*onreleased)(void *self)) {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
-    if(fd<0){
+    if(fd<0) {
         return;
     }
     sph_socket_init_from_fd(s, fd, onreleased);
 }
 
-void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void *self)){
+void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void *self)) {
     socket->loop=NULL;
     socket->fd=fd;
     socket->ref=1;
@@ -85,33 +85,33 @@ void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void 
  * 绑定地址，可以是IPv6或者IPv4
  * 成功返回 1，失败返回 0
  */
-int sph_socket_bind(SphSocket *socket, const char *ip, unsigned short port){
+int sph_socket_bind(SphSocket *socket, const char *ip, unsigned short port) {
     struct sockaddr_storage addr;
     socklen_t addrlen;
     struct sockaddr_in *addr4 = (struct sockaddr_in*)&addr;
     struct sockaddr_in6 *addr6 = (struct sockaddr_in6*)&addr;
 
-    if(inet_pton(AF_INET,ip, &addr4->sin_addr.s_addr)){
+    if(inet_pton(AF_INET,ip, &addr4->sin_addr.s_addr)) {
         addr4->sin_family=AF_INET;
         addr4->sin_port=htons(port);
         addrlen = sizeof(*addr4);
-    }else if(inet_pton(AF_INET6, ip, &addr6->sin6_addr.s6_addr)){
+    } else if(inet_pton(AF_INET6, ip, &addr6->sin6_addr.s6_addr)) {
         addr6->sin6_family=AF_INET6;
         addr6->sin6_port=htons(port);
         addrlen=sizeof(*addr6);
-    }else{
+    } else {
         return 0;
     }
     return bind(socket->fd, (struct sockaddr*)&addr, addrlen)==0;
 }
 
 /* 被动套接字 */
-int sph_socket_listen(SphSocket *socket,int backlog){
+int sph_socket_listen(SphSocket *socket,int backlog) {
     return listen(socket->fd, backlog)==0;
 }
 
 /* reuse地址和端口 */
-int sph_socket_reuse_addr(SphSocket *socket, int addr){
+int sph_socket_reuse_addr(SphSocket *socket, int addr) {
 #if defined(SO_REUSEADDR)
     return setsockopt(socket->fd, SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr))==0;
 #else
@@ -119,7 +119,7 @@ int sph_socket_reuse_addr(SphSocket *socket, int addr){
 #endif
 }
 
-int sph_socket_reuse_port(SphSocket *socket, int port){
+int sph_socket_reuse_port(SphSocket *socket, int port) {
 #if defined(SO_REUSEPORT)
     return setsockopt(socket->fd, SOL_SOCKET, SO_REUSEPORT, &port, sizeof(port))==0;
 #else
@@ -129,16 +129,16 @@ int sph_socket_reuse_port(SphSocket *socket, int port){
 
 
 /* 接收和发送数据的包裹，非阻塞 */
-int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags){
+int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags) {
     return recv(socket->fd, buf, len, flags);
 }
 
-int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags){
+int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags) {
     return send(socket->fd, buf, len, flags);
 }
 
 /* accepts a connection and returns the file descriptor */
-int sph_socket_accept(SphSocket *socket){
+int sph_socket_accept(SphSocket *socket) {
     return accept(socket->fd, NULL, NULL);
 }
 
@@ -150,11 +150,11 @@ int sph_socket_accept(SphSocket *socket){
  * 套接字进入事件回调
  */
 void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
-                      void (*callback)(struct ev_loop*, ev_io *, int)){
-    if(UNLIKELY(callback==NULL)){
+                      void (*callback)(struct ev_loop*, ev_io *, int)) {
+    if(UNLIKELY(callback==NULL)) {
         return;
     }
-    if(loop==NULL){
+    if(loop==NULL) {
         loop=get_default_evloop();
     }
     socket->loop=loop;
@@ -163,8 +163,8 @@ void sph_socket_start(SphSocket *socket, struct ev_loop *loop,
 }
 
 /* 结束监听套接字事件 */
-void sph_socket_stop(SphSocket *socket){
-    if(UNLIKELY(socket->loop==NULL)){
+void sph_socket_stop(SphSocket *socket) {
+    if(UNLIKELY(socket->loop==NULL)) {
         return;
     }
     ev_io_stop(socket->loop, (ev_io*)socket);

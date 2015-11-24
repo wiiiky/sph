@@ -20,15 +20,15 @@
 
 #include "socket.h"
 
-typedef struct{
+typedef struct {
     SphSocket parent;
-}JacServer;
+} JacServer;
 
 #define jac_server_socket(server)   ((SphSocket*)server)
 
 typedef struct {
     SphSocket parent;
-}JacClient;
+} JacClient;
 
 #define jac_client_socket(client)   ((SphSocket*)client)
 
