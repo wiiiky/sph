@@ -14,14 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
-#ifndef __SPH_H__
-#define __SPH_H__
 
-#include "utils.h"
+#ifndef __SPH_MOD_H__
+#define __SPH_MOD_H__
+
 #include "socket.h"
-#include "loop.h"
-#include "mod.h"
-#include "jacques.h"
+
+
+typedef struct {
+    int (*m_init)(void);    /* 模块初始化函数，在模块载入时调用，返回0表示初始化成功 */
+    int (*m_accept)(SphSocket *socket); /* 接受到客户端连接时的回调函数，返回0表示成功 */
+} JacModule;
 
 
 #endif
