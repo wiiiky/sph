@@ -19,6 +19,7 @@
 #define __SPH_SOCKET_H__
 
 #include <ev.h>
+#include "buffer.h"
 
 typedef struct _SphSocket SphSocket;
 
@@ -27,8 +28,10 @@ struct _SphSocket {
     ev_io parent;
     struct ev_loop *loop;
     int fd;
-    int ref;    /* 引用计数 */
+    SphBuffer *rbuf;
+    SphBuffer *wbuf;
 
+    int ref;    /* 引用计数 */
     void (*onreleased)(void *self);
 };
 

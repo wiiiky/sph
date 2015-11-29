@@ -7,7 +7,8 @@ libsph_la_SOURCES = \
 	socket.c \
 	loop.c \
 	utils.c \
-	mod.c
+	mod.c \
+	buffer.c
 
 libsph_la_LDFLAGS = -lev
 libsph_lainclude_HEADERS = \
@@ -16,6 +17,7 @@ libsph_lainclude_HEADERS = \
 	loop.h \
 	utils.h \
 	mod.h \
+	buffer.h \
 	jacques.h
 
 libsph_laincludedir = $(includedir)/sph
