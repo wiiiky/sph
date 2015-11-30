@@ -37,6 +37,8 @@ struct _SphSocket {
 
 #define sph_socket_get_fd(s)    ((s)->fd)
 #define sph_socket_get_evloop(s)    ((s)->loop)
+#define sph_socket_get_wbuf(s)  ((s)->wbuf)
+#define sph_socket_get_rbuf(s)  ((s)->rbuf)
 
 /* 增加和减少引用计数 */
 void sph_socket_ref(SphSocket *socket);

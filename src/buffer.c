@@ -51,6 +51,19 @@ void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len) {
     buf->length+=len;
 }
 
+/* 删除缓冲区的数据 */
+void sph_buffer_erase(SphBuffer *buf, unsigned int start, unsigned int len) {
+    if(UNLIKELY(len==0||start>=sph_buffer_get_length(buf))) {
+        return;
+    }
+    if(start+len>=sph_buffer_get_length(buf)) {
+        buf->length=start;
+    } else {
+        memmove(buf->data+start, buf->data+start+len, len);
+        buf->length-=len;
+    }
+}
+
 
 /* 保证缓冲区添加了len个字节后长度依然足够 */
 static inline int sph_buffer_ensure_mem(SphBuffer *buf, unsigned int len) {
