@@ -80,6 +80,7 @@ void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void 
     socket->loop=NULL;
     socket->fd=fd;
     socket->ref=1;
+    socket->user_data=NULL;
     socket->rbuf=sph_buffer_new();
     socket->wbuf=sph_buffer_new();
     socket->onreleased=onreleased;

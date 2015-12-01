@@ -30,6 +30,7 @@ struct _SphSocket {
     int fd;
     SphBuffer *rbuf;
     SphBuffer *wbuf;
+    void *user_data;
 
     int ref;    /* 引用计数 */
     void (*onreleased)(void *self);
@@ -39,6 +40,8 @@ struct _SphSocket {
 #define sph_socket_get_evloop(s)    ((s)->loop)
 #define sph_socket_get_wbuf(s)  ((s)->wbuf)
 #define sph_socket_get_rbuf(s)  ((s)->rbuf)
+#define sph_socket_get_user_data(s) ((s)->user_data)
+#define sph_socket_set_user_data(s, d)  ((s)->user_data)=(d)
 
 /* 增加和减少引用计数 */
 void sph_socket_ref(SphSocket *socket);
