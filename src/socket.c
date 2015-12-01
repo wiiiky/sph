@@ -34,6 +34,8 @@ static inline void sph_socket_release(SphSocket *socket) {
         ev_io_stop(socket->loop, (ev_io*)socket);
     }
     close(socket->fd);
+    sph_buffer_free(socket->wbuf);
+    sph_buffer_free(socket->rbuf);
     free(socket);
 }
 

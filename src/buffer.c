@@ -36,6 +36,11 @@ SphBuffer *sph_buffer_new_with_length(unsigned int len) {
     return buf;
 }
 
+void sph_buffer_free(SphBuffer *buf) {
+    free(buf->data);
+    free(buf);
+}
+
 /* 清空缓冲区 */
 void sph_buffer_clear(SphBuffer *buf) {
     buf->length=0;
