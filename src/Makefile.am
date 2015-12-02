@@ -17,8 +17,7 @@ libsph_lainclude_HEADERS = \
 	loop.h \
 	utils.h \
 	mod.h \
-	buffer.h \
-	jacques.h
+	buffer.h
 
 libsph_laincludedir = $(includedir)/sph
 
