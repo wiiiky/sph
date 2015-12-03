@@ -22,12 +22,13 @@
 
 typedef struct {
     unsigned int total;     /* 缓冲区总长度 */
+    unsigned int start;     /* 当前缓冲数据起始位置 */
     unsigned int length;    /* 缓冲区现有长度 */
     uint8_t *data;             /* 缓冲区指针 */
 } SphBuffer;
 
 #define sph_buffer_get_length(buf)  ((buf)->length)
-#define sph_buffer_get_data(buf)    ((buf)->data)
+#define sph_buffer_get_data(buf)    ((buf)->data+(buf)->start)
 
 SphBuffer *sph_buffer_new(void);
 SphBuffer *sph_buffer_new_with_length(unsigned int len);
@@ -38,9 +39,11 @@ void sph_buffer_clear(SphBuffer *buf);
 
 /* 在缓冲区添加数据 */
 void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len);
-
+/* 删除缓冲区首部len个字节 */
+void sph_buffer_pop(SphBuffer *buf, unsigned int len);
 /* 删除缓冲区的数据 */
 void sph_buffer_erase(SphBuffer *buf, unsigned int start, unsigned int len);
+
 
 
 #endif

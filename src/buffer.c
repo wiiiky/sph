@@ -32,6 +32,7 @@ SphBuffer *sph_buffer_new_with_length(unsigned int len) {
     SphBuffer *buf=(SphBuffer*)malloc(sizeof(SphBuffer));
     buf->total=len;
     buf->length=0;
+    buf->start=0;
     buf->data=(uint8_t*)malloc(sizeof(uint8_t)*buf->total);
     return buf;
 }
@@ -44,7 +45,7 @@ void sph_buffer_free(SphBuffer *buf) {
 /* 清空缓冲区 */
 void sph_buffer_clear(SphBuffer *buf) {
     buf->length=0;
-    buf->data[0]=0;
+    buf->start=0;
 }
 
 /* 在缓冲区添加数据 */
@@ -52,7 +53,7 @@ void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len) {
     if(UNLIKELY(len==0||sph_buffer_ensure_mem(buf, len))) {
         return;
     }
-    memcpy(buf->data+buf->length, data, len);
+    memcpy(buf->data+buf->start+buf->length, data, len);
     buf->length+=len;
 }
 
@@ -64,7 +65,18 @@ void sph_buffer_erase(SphBuffer *buf, unsigned int start, unsigned int len) {
     if(start+len>=sph_buffer_get_length(buf)) {
         buf->length=start;
     } else {
-        memmove(buf->data+start, buf->data+start+len, len);
+        memmove(buf->data+buf->start+start, buf->data+buf->start+start+len, buf->length-start-len);
+        buf->length-=len;
+    }
+}
+
+/* 删除缓冲区首部len个字节 */
+void sph_buffer_pop(SphBuffer *buf, unsigned int len) {
+    if(len>=buf->length) {
+        buf->length=0;
+        buf->start=0;
+    } else {
+        buf->start+=len;
         buf->length-=len;
     }
 }
@@ -79,6 +91,10 @@ static inline int sph_buffer_ensure_mem(SphBuffer *buf, unsigned int len) {
             return 1;
         }
         buf->data=data;
+    }
+    if(UNLIKELY(buf->start!=0 && buf->total-buf->start-buf->length<len)) {
+        memmove(buf->data, buf->data+buf->start, buf->length);
+        buf->start=0;
     }
     return 0;
 }
