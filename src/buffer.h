@@ -41,8 +41,6 @@ void sph_buffer_clear(SphBuffer *buf);
 void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len);
 /* 删除缓冲区首部len个字节 */
 void sph_buffer_pop(SphBuffer *buf, unsigned int len);
-/* 删除缓冲区的数据 */
-void sph_buffer_erase(SphBuffer *buf, unsigned int start, unsigned int len);
 
 
 

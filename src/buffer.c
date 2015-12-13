@@ -57,19 +57,6 @@ void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len) {
     buf->length+=len;
 }
 
-/* 删除缓冲区的数据 */
-void sph_buffer_erase(SphBuffer *buf, unsigned int start, unsigned int len) {
-    if(UNLIKELY(len==0||start>=sph_buffer_get_length(buf))) {
-        return;
-    }
-    if(start+len>=sph_buffer_get_length(buf)) {
-        buf->length=start;
-    } else {
-        memmove(buf->data+buf->start+start, buf->data+buf->start+start+len, buf->length-start-len);
-        buf->length-=len;
-    }
-}
-
 /* 删除缓冲区首部len个字节 */
 void sph_buffer_pop(SphBuffer *buf, unsigned int len) {
     if(len>=buf->length) {
@@ -81,7 +68,6 @@ void sph_buffer_pop(SphBuffer *buf, unsigned int len) {
     }
 }
 
-
 /* 保证缓冲区添加了len个字节后长度依然足够 */
 static inline int sph_buffer_ensure_mem(SphBuffer *buf, unsigned int len) {
     while(UNLIKELY(buf->length+len>buf->total)) {
@@ -92,7 +78,7 @@ static inline int sph_buffer_ensure_mem(SphBuffer *buf, unsigned int len) {
         }
         buf->data=data;
     }
-    if(UNLIKELY(buf->start!=0 && buf->total-buf->start-buf->length<len)) {
+    if(UNLIKELY(buf->start!=0 && ((buf->total-buf->start-buf->length)<len))) {
         memmove(buf->data, buf->data+buf->start, buf->length);
         buf->start=0;
     }
