@@ -332,7 +332,7 @@ libsph_la_SOURCES = \
 	mod.c \
 	buffer.c
 
-libsph_la_LDFLAGS = -lev
+libsph_la_LDFLAGS = -lev -ldl
 libsph_lainclude_HEADERS = \
 	sph.h \
 	socket.h \

@@ -14,27 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
-#include "mod.h"
-#include <stdio.h>
+#include <sph.h>
 
-#include <stdlib.h>
-#include <dlfcn.h>
-
-
-/* 从指定文件载入模块，失败返回NULL */
-JacModule *jac_module_load(const char *path) {
-    void *handle = dlopen(path, RTLD_NOW|RTLD_NODELETE);
-    if(!handle) {
-        return NULL;
-    }
-
-    JacModule *mod = NULL;
-    void *ptr=dlsym(handle, JACQUES_MODULE_STRING);
-    if(!ptr) {
-        goto CLOSE;
-    }
-    mod = *((JacModule**)ptr);
-CLOSE:
-    dlclose(handle);
-    return mod;
+static int m_init(void) {
+    return 0;
 }
+
+static int m_accept(SphSocket *socket) {
+    return 1;
+}
+
+static int m_recv(SphSocket *socket, uint8_t *pdata, unsigned int len) {
+    return 2;
+}
+
+JacModule testMod = {
+    m_init,
+    m_accept,
+    m_recv
+};
+
+JACQUES_MODULE(testMod);

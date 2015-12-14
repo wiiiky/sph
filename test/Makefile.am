@@ -14,15 +14,24 @@ AM_LDFLAGS = \
 	-lsph
 
 noinst_PROGRAMS = \
-	test-buffer
+	test-buffer \
+	test-mod
 
 TESTS = \
-	test-buffer
+	test-buffer \
+	test-mod
 
 test_buffer_SOURCES = \
 	test-buffer.c
 
+test_mod_SOURCES = \
+	test-mod.c
+
+all-local: test-mod.so
+
+test-mod.so: test-mod.so.c
+	$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -shared -fPIC $? -o $@
 
 clean-local:
 	-astyle --style=google -n *.c
-	-rm -rf *~
+	-rm -rf *~ *.so
