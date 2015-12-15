@@ -14,15 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
-#ifndef __SPH_H__
-#define __SPH_H__
+#ifndef __SPH_LIST_H__
+#define __SPH_LIST_H__
 
-#include "utils.h"
-#include "socket.h"
-#include "loop.h"
-#include "mod.h"
-#include "buffer.h"
-#include "list.h"
+typedef struct _SphList SphList;
 
+struct _SphList {
+    void *data;
+    SphList *prev;
+    SphList *next;
+};
+#define sph_list_data(l)    ((l)->data)
+#define sph_list_next(l)    ((l)->next)
+#define sph_list_prev(l)    ((l)->prev)
+#define sph_list_new()  (NULL)
+
+SphList *sph_list_last(SphList *l);
+
+SphList *sph_list_append(SphList *l, void *data);
+void sph_list_free(SphList *l, void (*destroy)(void *data));
 
 #endif

@@ -20,12 +20,14 @@
 
 #include "socket.h"
 
+typedef struct _JacModule JacModule;
 
-typedef struct {
+
+struct _JacModule {
     int (*m_init)(void);     /* 服务初始化时调用，返回0表示初始化成功 */
     int (*m_accept)(SphSocket *socket); /* 接受到客户端连接时的回调函数，返回0表示成功接收 */
     int (*m_recv)(SphSocket *socket, uint8_t *pdata, unsigned int len);
-} JacModule;
+};
 
 #define XSTRINGIFY(s) STRINGIFY(s)
 #define STRINGIFY(s) #s
