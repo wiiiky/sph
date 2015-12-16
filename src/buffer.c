@@ -49,7 +49,7 @@ void sph_buffer_clear(SphBuffer *buf) {
 }
 
 /* 在缓冲区添加数据 */
-void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len) {
+void sph_buffer_append(SphBuffer *buf,const void *data, unsigned int len) {
     if(UNLIKELY(len==0||sph_buffer_ensure_mem(buf, len))) {
         return;
     }

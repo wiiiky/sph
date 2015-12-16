@@ -24,7 +24,7 @@ static int m_accept(SphSocket *socket) {
     return 1;
 }
 
-static int m_recv(SphSocket *socket, uint8_t *pdata, unsigned int len) {
+static int m_recv(SphSocket *socket, const uint8_t *pdata, unsigned int len) {
     return 2;
 }
 

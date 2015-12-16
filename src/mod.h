@@ -26,7 +26,7 @@ typedef struct _JacModule JacModule;
 struct _JacModule {
     int (*m_init)(void);     /* 服务初始化时调用，返回0表示初始化成功 */
     int (*m_accept)(SphSocket *socket); /* 接受到客户端连接时的回调函数，返回0表示成功接收 */
-    int (*m_recv)(SphSocket *socket, uint8_t *pdata, unsigned int len);
+    int (*m_recv)(SphSocket *socket, const uint8_t *pdata, unsigned int len);
 };
 
 #define XSTRINGIFY(s) STRINGIFY(s)

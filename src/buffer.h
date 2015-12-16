@@ -38,7 +38,7 @@ void sph_buffer_free(SphBuffer *buf);
 void sph_buffer_clear(SphBuffer *buf);
 
 /* 在缓冲区添加数据 */
-void sph_buffer_append(SphBuffer *buf, void *data, unsigned int len);
+void sph_buffer_append(SphBuffer *buf, const void *data, unsigned int len);
 /* 删除缓冲区首部len个字节 */
 void sph_buffer_pop(SphBuffer *buf, unsigned int len);
 

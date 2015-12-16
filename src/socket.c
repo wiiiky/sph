@@ -27,8 +27,8 @@
 
 /* 释放套接字所有资源，包括文件描述符和内存 */
 static inline void sph_socket_release(SphSocket *socket) {
-    if(socket->onreleased) {
-        socket->onreleased(socket);
+    if(socket->release) {
+        socket->release(socket);
     }
     if(socket->loop) {
         ev_io_stop(socket->loop, (ev_io*)socket);
@@ -63,27 +63,26 @@ SphSocket *sph_socket_new(void) {
 /* 从现有的文件描述符创建一个套接字对象 */
 SphSocket *sph_socket_new_from_fd(int fd) {
     SphSocket *socket=(SphSocket*)malloc(sizeof(SphSocket));
-    sph_socket_init_from_fd(socket, fd, NULL);
+    sph_socket_init_from_fd(socket, fd);
 
     return socket;
 }
 
-void sph_socket_init(SphSocket *s,void (*onreleased)(void *self)) {
+void sph_socket_init(SphSocket *s) {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if(fd<0) {
         return;
     }
-    sph_socket_init_from_fd(s, fd, onreleased);
+    sph_socket_init_from_fd(s, fd);
 }
 
-void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void *self)) {
+void sph_socket_init_from_fd(SphSocket *socket, int fd) {
     socket->loop=NULL;
     socket->fd=fd;
     socket->ref=1;
     socket->user_data=NULL;
     socket->rbuf=sph_buffer_new();
     socket->wbuf=sph_buffer_new();
-    socket->onreleased=onreleased;
 }
 
 /*
@@ -140,6 +139,13 @@ int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags) {
 
 int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags) {
     return send(socket->fd, buf, len, flags);
+}
+
+/* 准备发送数据，将在下一次可发送时发送 */
+void sph_socket_prepare_data(SphSocket *socket, const void *buf, unsigned int len) {
+    if(socket->prepare) {
+        socket->prepare(socket, buf, len);
+    }
 }
 
 /* accepts a connection and returns the file descriptor */

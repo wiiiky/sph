@@ -33,7 +33,8 @@ struct _SphSocket {
     void *user_data;
 
     int ref;    /* 引用计数 */
-    void (*onreleased)(void *self);
+    void (*release)(void *self);
+    void (*prepare)(SphSocket *socket, const void *data, unsigned int len);
 };
 
 #define sph_socket_get_fd(s)    ((s)->fd)
@@ -51,8 +52,8 @@ void sph_socket_unref(SphSocket *socket);
 SphSocket *sph_socket_new(void);
 SphSocket *sph_socket_new_from_fd(int fd);
 
-void sph_socket_init(SphSocket *socket, void (*onreleased)(void *self));
-void sph_socket_init_from_fd(SphSocket *socket, int fd, void (*onreleased)(void *self));
+void sph_socket_init(SphSocket *socket);
+void sph_socket_init_from_fd(SphSocket *socket, int fd);
 
 /*
  * 绑定地址，可以是IPv6或者IPv4
@@ -68,6 +69,9 @@ int sph_socket_reuse_port(SphSocket *socket, int port);
 /* 接收和发送数据的包裹，非阻塞 */
 int sph_socket_recv(SphSocket *socket, void *buf, unsigned int len, int flags);
 int sph_socket_send(SphSocket *socket, const void *buf, unsigned int len, int flags);
+
+/* 准备发送数据，将在下一次可发送时发送 */
+void sph_socket_prepare_data(SphSocket *socket, const void *buf, unsigned int len);
 
 /* accepts a connection and returns the file descriptor */
 int sph_socket_accept(SphSocket *socket);
