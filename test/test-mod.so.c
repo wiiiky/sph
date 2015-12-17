@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
 #include <sph.h>
+#include <stdlib.h>
 
 static int m_init(void) {
     return 0;
@@ -30,6 +31,7 @@ static int m_recv(SphSocket *socket, const uint8_t *pdata, unsigned int len) {
 
 JacModule testMod = {
     m_init,
+    NULL,
     m_accept,
     m_recv
 };
