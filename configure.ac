@@ -20,5 +20,5 @@ AC_CONFIG_FILES([Makefile])
 AC_OUTPUT([
     src/Makefile
     src/sph.pc
-    test/Makefile
+    tests/Makefile
 ])

@@ -27,9 +27,9 @@ test_buffer_SOURCES = \
 test_mod_SOURCES = \
 	test-mod.c
 
-all-local: test-mod.so
+all-local: test_mod.so
 
-test-mod.so: test-mod.so.c
+test_mod.so: test_mod.so.c
 	$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -shared -fPIC $? -o $@
 
 clean-local:

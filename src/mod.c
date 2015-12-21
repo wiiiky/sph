@@ -16,25 +16,34 @@
  */
 #include "mod.h"
 #include <stdio.h>
-
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <dlfcn.h>
 
 
 /* 从指定文件载入模块，失败返回NULL */
-JacModule *jac_module_load(const char *path) {
-    void *handle = dlopen(path, RTLD_NOW|RTLD_NODELETE);
-    if(!handle) {
-        return NULL;
+JacModule *jac_module_load(const char *dir, const char *name) {
+    char buf[4096];
+    void *handle;
+    JacModule *mod = NULL;
+
+    snprintf(buf, sizeof(buf), "%s/%s", dir, name);
+    if((handle = dlopen(buf, RTLD_NOW|RTLD_NODELETE))==NULL) {
+        snprintf(buf, sizeof(buf), "%s/%s.so", dir, name);
+        if((handle = dlopen(buf, RTLD_NOW|RTLD_NODELETE))==NULL) {
+            return NULL;
+        }
     }
 
-    JacModule *mod = NULL;
-    void *ptr=dlsym(handle, JACQUES_MODULE_STRING);
+    snprintf(buf, sizeof(buf), "JacInit_%s", name);
+    void *ptr=dlsym(handle, buf);
     if(!ptr) {
         goto CLOSE;
     }
-    mod = *((JacModule**)ptr);
+    mod = ((JacInit)ptr)();
 CLOSE:
     dlclose(handle);
     return mod;
 }
+

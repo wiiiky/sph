@@ -17,23 +17,16 @@
 #include <sph.h>
 #include <stdlib.h>
 
-static int m_init(void) {
+int main (int argc, char *argv[]) {
+    JacModule *mod=jac_module_load(".", "test_mod");
+    if(!mod) {
+        return 1;
+    }
+    if(mod->m_accept(NULL)!=1) {
+        return 2;
+    }
+    if(mod->m_recv(NULL, NULL, 0)!=2) {
+        return 3;
+    }
     return 0;
 }
-
-static int m_accept(SphSocket *socket) {
-    return 1;
-}
-
-static int m_recv(SphSocket *socket, const uint8_t *pdata, unsigned int len) {
-    return 2;
-}
-
-JacModule testMod = {
-    m_init,
-    NULL,
-    m_accept,
-    m_recv
-};
-
-JACQUES_MODULE(testMod);
