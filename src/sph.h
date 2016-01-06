@@ -23,6 +23,7 @@
 #include "mod.h"
 #include "buffer.h"
 #include "list.h"
+#include "config.h"
 
 
 #endif

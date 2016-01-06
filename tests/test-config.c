@@ -17,5 +17,10 @@
 #include <sph.h>
 
 int main (int argc, char *argv[]) {
+    CfgParser *parser = cfg_parser_new();
+    if(!cfg_parser_loads(parser, "./test-config.conf")) {
+        return -1;
+    }
+    cfg_parser_free(parser);
     return 0;
 }

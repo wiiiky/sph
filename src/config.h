@@ -46,9 +46,28 @@ typedef struct _CfgValue CfgValue;
 typedef struct _CfgSetting CfgSetting;
 
 struct _CfgParser {
+    CfgValue *root;
 
+    /* error */
+    char *err_path;
+    uint64_t err_line;
+    char *err_msg;
 };
+#define cfg_parser_get_path(p)          (p)->path
+#define cfg_parser_get_root(p)          (p)->root
+#define cfg_parser_get_err_path(p)      (p)->err_path
+#define cfg_parser_get_err_line(p)      (p)->err_line
+#define cfg_parser_get_err_msg(p)       (p)->err_msg
 
+CfgParser *cfg_parser_new(void);
+void cfg_parser_free(CfgParser *p);
+/* 载入配置文件，解析成功返回1，失败返回0 */
+int cfg_parser_loads(CfgParser *p,const char *path);
+
+/* 一个CfgSetting表示一个键值对，如key: value，
+ * 因为还支持tag，因此可以是key tag: value
+ * 如 Server test :{port:1234}
+ */
 struct _CfgSetting {
     char *key;
     char *tag;
@@ -66,6 +85,9 @@ typedef enum {
     CFG_TYPE_GROUP,
 } CfgType;
 
+/* CfgValue表示一种类型的值
+ * 支持整数、浮点数、字符串、数组和Group
+ */
 struct _CfgValue {
     CfgType type;
     union {
