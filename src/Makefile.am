@@ -9,7 +9,8 @@ libsph_la_SOURCES = \
 	utils.c \
 	mod.c \
 	buffer.c \
-	list.c
+	list.c \
+	config.c
 
 libsph_la_LDFLAGS = -lev -ldl
 libsph_lainclude_HEADERS = \
@@ -19,7 +20,8 @@ libsph_lainclude_HEADERS = \
 	utils.h \
 	mod.h \
 	buffer.h \
-	list.h
+	list.h \
+	config.h
 
 libsph_laincludedir = $(includedir)/sph
 

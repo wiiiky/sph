@@ -14,25 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
-#ifndef __SPH_LIST_H__
-#define __SPH_LIST_H__
+#include <sph.h>
 
-typedef struct _SphList SphList;
-typedef void (*SphListDestroy)(void *data);
-
-struct _SphList {
-    void *data;
-    SphList *prev;
-    SphList *next;
-};
-#define sph_list_data(l)    ((l)->data)
-#define sph_list_next(l)    ((l)->next)
-#define sph_list_prev(l)    ((l)->prev)
-#define sph_list_new()  (NULL)
-
-SphList *sph_list_last(SphList *l);
-
-SphList *sph_list_append(SphList *l, void *data);
-void sph_list_free(SphList *l, SphListDestroy destroy);
-
-#endif
+int main (int argc, char *argv[]) {
+    return 0;
+}

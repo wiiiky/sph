@@ -15,17 +15,22 @@ AM_LDFLAGS = \
 
 noinst_PROGRAMS = \
 	test-buffer \
-	test-mod
+	test-mod \
+	test-config
 
 TESTS = \
 	test-buffer \
-	test-mod
+	test-mod \
+	test-config
 
 test_buffer_SOURCES = \
 	test-buffer.c
 
 test_mod_SOURCES = \
 	test-mod.c
+
+test_config_SOURCES = \
+	test-config.c
 
 all-local: test_mod.so
 

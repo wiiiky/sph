@@ -88,8 +88,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = test-buffer$(EXEEXT) test-mod$(EXEEXT)
-TESTS = test-buffer$(EXEEXT) test-mod$(EXEEXT)
+noinst_PROGRAMS = test-buffer$(EXEEXT) test-mod$(EXEEXT) \
+	test-config$(EXEEXT)
+TESTS = test-buffer$(EXEEXT) test-mod$(EXEEXT) test-config$(EXEEXT)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
@@ -110,6 +111,9 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+am_test_config_OBJECTS = test-config.$(OBJEXT)
+test_config_OBJECTS = $(am_test_config_OBJECTS)
+test_config_LDADD = $(LDADD)
 am_test_mod_OBJECTS = test-mod.$(OBJEXT)
 test_mod_OBJECTS = $(am_test_mod_OBJECTS)
 test_mod_LDADD = $(LDADD)
@@ -147,8 +151,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(test_buffer_SOURCES) $(test_mod_SOURCES)
-DIST_SOURCES = $(test_buffer_SOURCES) $(test_mod_SOURCES)
+SOURCES = $(test_buffer_SOURCES) $(test_config_SOURCES) \
+	$(test_mod_SOURCES)
+DIST_SOURCES = $(test_buffer_SOURCES) $(test_config_SOURCES) \
+	$(test_mod_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -515,6 +521,9 @@ test_buffer_SOURCES = \
 test_mod_SOURCES = \
 	test-mod.c
 
+test_config_SOURCES = \
+	test-config.c
+
 all: all-am
 
 .SUFFIXES:
@@ -562,6 +571,10 @@ test-buffer$(EXEEXT): $(test_buffer_OBJECTS) $(test_buffer_DEPENDENCIES) $(EXTRA
 	@rm -f test-buffer$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_buffer_OBJECTS) $(test_buffer_LDADD) $(LIBS)
 
+test-config$(EXEEXT): $(test_config_OBJECTS) $(test_config_DEPENDENCIES) $(EXTRA_test_config_DEPENDENCIES) 
+	@rm -f test-config$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_config_OBJECTS) $(test_config_LDADD) $(LIBS)
+
 test-mod$(EXEEXT): $(test_mod_OBJECTS) $(test_mod_DEPENDENCIES) $(EXTRA_test_mod_DEPENDENCIES) 
 	@rm -f test-mod$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_mod_OBJECTS) $(test_mod_LDADD) $(LIBS)
@@ -573,6 +586,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-buffer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-mod.Po@am__quote@
 
 .c.o:
@@ -805,6 +819,13 @@ test-buffer.log: test-buffer$(EXEEXT)
 test-mod.log: test-mod$(EXEEXT)
 	@p='test-mod$(EXEEXT)'; \
 	b='test-mod'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test-config.log: test-config$(EXEEXT)
+	@p='test-config$(EXEEXT)'; \
+	b='test-config'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
