@@ -1,4 +1,4 @@
-AM_CFLAGS = -Wall -Werror
+AM_CFLAGS = -Wall
 
 
 lib_LTLIBRARIES=libsph.la

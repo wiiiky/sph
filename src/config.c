@@ -51,22 +51,63 @@ void cfg_parser_free(CfgParser *p) {
 }
 
 
+/*
+ * 解析{}指定的配置组
+ * @val CFG_TYPE_GROUP类型的CfgValue
+ * @data 字符串格式的配置
+ * @len 字符串长度
+ * @is_root 该组是否是root组，root组没有{}
+ *
+ * @return 成功返回解析调的字节数，否则返回-1
+ */
+static int cfg_parse_group(CfgValue *val, char *data, int len, int is_root);
+/*
+ * 解析设置名， 配置名格式符合一般C语言的变量名格式。
+ * @val 用于返回设置名，需要释放
+ * @data 字符串格式的配置
+ * @len 字符串长度
+ */
+static int cfg_parse_key(char **val, char *data, int len);
+
 /* 载入配置文件，解析成功返回1，失败返回0 */
 int cfg_parser_loads(CfgParser *p,const char *path) {
     int fd = -1;
     struct stat sb;
     char *data;
+    int result=-1;
 
     if((fd = open(path, O_RDONLY))<0
             ||fstat(fd, &sb)
             ||(data = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0))==MAP_FAILED) {
         /* 文件打开失败、或者内存影射失败 */
-        close(fd);
         cfg_parser_set_error(p, path, 0, strerror(errno));
-        return 0;
+        goto OUT;
     }
+    result = cfg_parse_group(p->root, data, sb.st_size, 1);
     munmap(data, sb.st_size);
+OUT:
     close(fd);
+    return result>=0;
+}
+
+
+typedef enum {
+    GROUP_START_BRACKET,
+    GROUP_KEY,
+    GROUP_VALUE,
+    GROUP_END_BRACKET,
+} GroupState;
+
+/* 解析{}指定的Object结构 */
+static int cfg_parse_group(CfgValue *val, char *data, int len, int is_root) {
+    GroupState state = GROUP_END_BRACKET;
+    if(is_root) {
+        state=GROUP_KEY;
+    }
+    return 1;
+}
+
+static int cfg_parse_key(char **val, char *data, int len) {
     return 1;
 }
 

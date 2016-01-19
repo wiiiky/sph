@@ -324,7 +324,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -Wall -Werror
+AM_CFLAGS = -Wall
 lib_LTLIBRARIES = libsph.la
 libsph_la_SOURCES = \
 	socket.c \
