@@ -109,5 +109,7 @@ CfgValue *cfg_value_ref(CfgValue *val);
 CfgValue *cfg_value_unref(CfgValue *val);
 
 
+void cfg_group_append(CfgValue *group, CfgSetting *setting);
+CfgSetting *cfg_group_append_full(CfgValue *group, const char *key, const char *tag, CfgValue *val);
 
 #endif

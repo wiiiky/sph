@@ -28,7 +28,7 @@
 /* 结构的构造和释放函数 */
 static inline CfgValue *cfg_value_alloc(CfgType type);
 static inline void cfg_value_free(CfgValue *val);
-static inline CfgSetting *cfg_setting_alloc(const char *key, const char *tag);
+static inline CfgSetting *cfg_setting_alloc(const char *key, const char *tag, CfgValue *val);
 static inline void cfg_setting_free(CfgSetting *st);
 
 /* 设置错误信息
@@ -104,6 +104,17 @@ static int cfg_parse_group(CfgValue *val, char *data, int len, int is_root) {
     if(is_root) {
         state=GROUP_KEY;
     }
+    int i=0;
+    while(i<len) {
+        char c = data[i++];
+        if(c==' '||c=='\n') {
+            continue;
+        }
+        switch(state) {
+        case GROUP_KEY:
+            break;
+        }
+    }
     return 1;
 }
 
@@ -138,6 +149,16 @@ CfgValue *cfg_value_unref(CfgValue *val) {
     return val;
 }
 
+void cfg_group_append(CfgValue *group, CfgSetting *setting) {
+    group->v_group=sph_list_append(group->v_group, setting);
+}
+
+CfgSetting *cfg_group_append_full(CfgValue *group, const char *key, const char *tag, CfgValue *val) {
+    CfgSetting *setting=cfg_setting_alloc(key, tag, val);
+    cfg_group_append(group, setting);
+    return setting;
+}
+
 
 static inline CfgValue *cfg_value_alloc(CfgType type) {
     CfgValue *val=(CfgValue*)calloc(1, sizeof(CfgValue*));
@@ -157,10 +178,15 @@ static inline void cfg_value_free(CfgValue *val) {
     free(val);
 }
 
-static inline CfgSetting *cfg_setting_alloc(const char *key, const char *tag) {
+static inline CfgSetting *cfg_setting_alloc(const char *key, const char *tag, CfgValue *val) {
     CfgSetting *st=(CfgSetting*)calloc(1, sizeof(CfgSetting));
     st->key=strdup(key);
     st->tag=strdup(tag);
+    st->val=val;
+    cfg_setting_ref(st);
+    if(val) {
+        cfg_value_ref(val);
+    }
     return st;
 }
 
